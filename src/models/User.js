@@ -12,11 +12,15 @@ const userSchema = new mongoose.Schema(
       minlength: [3, "Username must be at least 3 characters"],
       index: true,
     },
-    fullName: {
+    firstName: {
       type: String,
-      required: [true, "Full name is required"],
+      required: [true, "First name is required"],
       trim: true,
       maxlength: [50, "Name cannot exceed 50 characters"],
+      index: true,
+    },
+    lastName: {
+      type: String,
     },
     email: {
       type: String,
@@ -24,9 +28,22 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
       validate(value) {
         if (!validator.isEmail(value)) {
           throw new Error("Please use a valid email address");
+        }
+      },
+    },
+    age: {
+      type: Number,
+      min: 18,
+    },
+    gender: {
+      type: String,
+      validate(value) {
+        if (!["male", "female", "others"].includes(value)) {
+          throw new Error("Gender data not valid: " + value);
         }
       },
     },
@@ -58,5 +75,25 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+userSchema.methods.getJWT = async function () {
+  const user = this;
+
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
+  return token;
+};
+
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
+  const user = this;
+  const passwordHash = user.password;
+
+  const isPasswordValid = await bcrypt.compare(
+    passwordInputByUser,
+    passwordHash,
+  );
+  return isPasswordValid;
+};
 
 module.exports = mongoose.model("User", userSchema);
