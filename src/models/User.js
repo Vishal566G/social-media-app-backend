@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
   {
@@ -21,6 +23,9 @@ const userSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
+      required: [true, "Last name is required"],
+      trim: true,
+      maxlength: [50, "Name cannot exceed 50 characters"],
     },
     email: {
       type: String,

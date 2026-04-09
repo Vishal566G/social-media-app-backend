@@ -1,6 +1,6 @@
 const express = require("express");
 const User = require("../models/User");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const { validateSignupData } = require("../utils/validation");
 
@@ -36,20 +36,21 @@ authRouter.post("/signup", async (req, res) => {
     });
     res.json({ message: "User added successfully", data: newUser });
   } catch (error) {
-    res.status(400).send("Error saving user: " + err.message);
+    res.status(400).send("Error saving user: " + error.message);
+    console.log(error);
   }
 });
 
 authRouter.post("/login", async (req, res) => {
   try {
-    const { emailId, password } = req.body;
+    const { email, password } = req.body;
 
-    const isEmailvalid = validator.isEmail(emailId);
+    const isEmailvalid = validator.isEmail(email);
     if (!isEmailvalid) {
       throw new Error("Invalid credentials");
     }
 
-    const user = await User.findOne({ emailId: emailId });
+    const user = await User.findOne({ email: email });
     if (!user) {
       throw new Error("Invalid credentials");
     }

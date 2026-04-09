@@ -5,8 +5,7 @@ const validateSignupData = (req) => {
   const REQUIRED_FIELDS = [
     "userName",
     "firstName",
-    "lastName",
-    "emailId",
+    "email",
     "password",
   ];
 
@@ -22,7 +21,7 @@ const validateSignupData = (req) => {
   //Data validation for required fields
   if (!firstName || !lastName) {
     throw new Error("Name is not valid: " + firstName || lastName);
-  } else if (!validator.isEmail(emailId)) {
+  } else if (!validator.isEmail(email)) {
     throw new Error("Email is not valid: " + emailId);
   } else if (!validator.isStrongPassword(password)) {
     throw new Error("Weak password, please enter a strong password");

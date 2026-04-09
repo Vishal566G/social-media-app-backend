@@ -12,10 +12,10 @@ const userAuth = async (req, res, next) => {
 
     // Verify token
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-    const { _id } = decodedData;
+    const { id } = decodedData;
 
     // Find user by ID
-    const user = await User.findById(_id);
+    const user = await User.findById(id);
     if (!user) {
       throw new Error("Unauthorized: User not found");
     }
@@ -26,3 +26,5 @@ const userAuth = async (req, res, next) => {
     res.status(401).send("Unauthorized: " + error.message);
   }
 };
+
+module.exports = userAuth;

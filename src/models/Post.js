@@ -29,7 +29,7 @@ const postSchema = new mongoose.Schema(
           ref: "User",
         },
         userName: {
-          tyepe: String,
+          type: String,
         },
         text: {
           type: String,
