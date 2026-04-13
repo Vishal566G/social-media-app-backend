@@ -3,6 +3,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const { validateSignupData } = require("../utils/validation");
+const auth = require("../middlewares/auth");
 
 const authRouter = express.Router();
 
@@ -69,6 +70,14 @@ authRouter.post("/login", async (req, res) => {
     } else {
       throw new Error("Invalid credentials");
     }
+  } catch (err) {
+    res.status(400).send("Error: " + err.message);
+  }
+});
+
+authRouter.get("/profile", auth, async (req, res) => {
+  try {
+    res.send(req.user);
   } catch (err) {
     res.status(400).send("Error: " + err.message);
   }

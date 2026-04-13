@@ -5,11 +5,13 @@ const connectDB = require("./config/db");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 dotenv.config();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 app.use("/", authRouter);
 app.use("/posts", postRouter);
